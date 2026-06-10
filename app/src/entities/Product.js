@@ -40,6 +40,7 @@ export class Product extends BaseEntity {
     this.priceForSale = Number(data.priceForSale) || PRODUCT_DEFAULTS.PRICE;
     this.salePercent = Number(data.salePercent) || PRODUCT_DEFAULTS.SALE_PERCENT;
     this.isBestSeller = data.isBestSeller || BESTSELLER_VALUES.NO;
+    this.isHide = data.isHide || false;
     this.description = data.description || '';
     this.tableInfo = data.tableInfo || '';
     this.videoUrl = data.videoUrl || '';
@@ -91,6 +92,7 @@ export class Product extends BaseEntity {
       collection: resolvedCollection,
       status: PRODUCT_STATUS.ACTIVE,
       isBestSeller: parts[F.IS_BESTSELLER] || BESTSELLER_VALUES.NO,
+      isHide: parts[18] === 'true', // Assuming isHide is at index 18
       colors: parts[F.COLOR] ? parts[F.COLOR].split(D.COLOR) : [],
       condition: parts[F.CONDITION] ? [parts[F.CONDITION]] : [],
       priceDefault: Number(parts[F.PRICE_DEFAULT]) || PRODUCT_DEFAULTS.PRICE,
@@ -117,6 +119,7 @@ export class Product extends BaseEntity {
       this.priceDefault || 'null',
       this.salePercent || 'null',
       this.isBestSeller === BESTSELLER_VALUES.YES ? BESTSELLER_VALUES.YES : BESTSELLER_VALUES.NO,
+      this.isHide ? 'true' : 'false',
       Array.isArray(this.condition) ? this.condition[0] : (this.condition || 'null'),
       Array.isArray(this.images) ? this.images.join(D.IMAGE) : 'null',
       this.description || 'null',

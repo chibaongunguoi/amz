@@ -218,7 +218,7 @@ export const PRODUCT_FIELDS = [
   'id', 'collection', 'document', 'brand', 'name', 'color',
   'priceForSale', 'priceDefault', 'salePercent', 'isBestSeller',
   'condition', 'images', 'description', 'features', 'tableInfo',
-  'youtubeUrl', 'post', 'category',
+  'youtubeUrl', 'post', 'category',"isHide"
 ];
 
 export const COLOR_HEX = {

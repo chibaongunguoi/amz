@@ -275,6 +275,7 @@ export function ensurePostgresSchema() {
         price_default numeric,
         sale_percent numeric,
         is_best_seller boolean NOT NULL DEFAULT false,
+        is_hiden boolean NOT NULL DEFAULT false,
         description text,
         table_info text,
         video_url text,
@@ -288,6 +289,7 @@ export function ensurePostgresSchema() {
       ALTER TABLE products ADD COLUMN IF NOT EXISTS condition_label text;
       ALTER TABLE products ADD COLUMN IF NOT EXISTS sale_percent numeric;
       ALTER TABLE products ADD COLUMN IF NOT EXISTS is_best_seller boolean NOT NULL DEFAULT false;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS is_hide boolean NOT NULL DEFAULT false;
       ALTER TABLE products ADD COLUMN IF NOT EXISTS description text;
       ALTER TABLE products ADD COLUMN IF NOT EXISTS table_info text;
       ALTER TABLE products ADD COLUMN IF NOT EXISTS video_url text;
@@ -416,8 +418,27 @@ export function ensurePostgresSchema() {
   return schemaPromise;
 }
 
+// export async function readPostgresCollection(collection) {
+//   await ensurePostgresSchema();
+//   if (collection === 'postService') {
+//     return listPostCollectionRows();
+//   }
+
+//   const result = await query(
+//     `
+//       SELECT *
+//       FROM collection_nodes
+//       WHERE collection = $1
+//       ORDER BY parent_path NULLS FIRST, sort_order ASC, node_path ASC
+//     `,
+//     [collection]
+//   );
+//   return restoreCollectionTree(result.rows);
+// }
 export async function readPostgresCollection(collection) {
-  await ensurePostgresSchema();
+  //  KHÔNG chạy schema trong API
+  // await ensurePostgresSchema();
+
   if (collection === 'postService') {
     return listPostCollectionRows();
   }
@@ -431,6 +452,7 @@ export async function readPostgresCollection(collection) {
     `,
     [collection]
   );
+
   return restoreCollectionTree(result.rows);
 }
 
@@ -471,6 +493,7 @@ async function refreshProductProjection(client, collection, data) {
             price_default,
             sale_percent,
             is_best_seller,
+            is_hide, 
             description,
             table_info,
             video_url,
@@ -480,7 +503,7 @@ async function refreshProductProjection(client, collection, data) {
           VALUES (
             $1, $2, $3, $4, $5, $6, $7,
             $8, $9, $10, $11, $12, $13, $14, $15,
-            $16, $17, $18, $19, now()
+            $16, $17, $18, $19, $20, now()
           )
           ON CONFLICT (id) DO UPDATE SET
             collection = EXCLUDED.collection,
@@ -519,6 +542,7 @@ async function refreshProductProjection(client, collection, data) {
           numberOrNull(projected.priceDefault),
           numberOrNull(projected.salePercent),
           booleanOrFalse(projected.isbestSeller) || booleanOrFalse(projected.isBestSeller),
+          booleanOrFalse(projected.isHide),
           textOrNull(projected.description),
           textOrNull(projected.tableInfo),
           textOrNull(projected.videoUrl || projected.youtubeUrl),

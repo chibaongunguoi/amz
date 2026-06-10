@@ -224,6 +224,7 @@ function Admin() {
           _product: obj,
         };
       });
+      console.log('Raw rows:', rows);
     const qRaw = (searchText || '').trim();
     if (qRaw !== '') {
       const q = qRaw.toLowerCase();
@@ -334,9 +335,11 @@ async function handleHideSelected() {
       const rec = tableData.find(r => r.key === k);
       if (!rec) continue;
       const current = rec._product || parseProductRecord(rec._raw, rec._code, rec._page);
+      console.log(current);
+      console.log(current.variants);
       await handleUpdateProduct(
         { ...current,
-          isHide: true 
+          isHide: !isFilter, 
         },
         rec.key,
         rec._code,
@@ -1330,7 +1333,6 @@ async function handleHideSelected() {
                           <span className="text-xs text-gray-400">—</span>
                         )}
                       </td> */}
-                      {console.log(row.isHide)}
                       <td className="px-3 py-3 text-center align-top">
                         {Number(row.salePercent) > 0 ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700">
@@ -1395,7 +1397,7 @@ async function handleHideSelected() {
                                 const current = rec._product || parseProductRecord(rec._raw, rec._code, rec._page);
                                 handleUpdateProduct(
                                     { ...current,
-                                      isHide: true 
+                                      isHide: !isFilter
                                     },
                                     rec.key,
                                     rec._code,

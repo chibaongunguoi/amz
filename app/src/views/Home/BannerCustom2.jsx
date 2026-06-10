@@ -11,7 +11,7 @@ function BannerCustom2() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const home = useSelector(state => state.settings.homeSettings);
-
+  console.log('home settings in BannerCustom2:', home);
   const bannerSources = (home && home[0] && home[0].bannerNowLink)
     ? [home[0].bannerNowLink, bannerCustom2]
     : [bannerCustom2];

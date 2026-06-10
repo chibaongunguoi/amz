@@ -314,6 +314,7 @@ function mapNormalizedProductRow(row) {
     salePercent,
     isBestSeller: isBestSeller ? BESTSELLER_VALUES.YES : BESTSELLER_VALUES.NO,
     isbestSeller: isBestSeller,
+    isHide: Boolean(row.is_hide),
     description: row.description || '',
     tableInfo: row.table_info || '',
     videoUrl: row.video_url || '',

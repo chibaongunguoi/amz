@@ -28,7 +28,7 @@ function Home() {
   const dispatch = useDispatch();
   
   const homeSettings = useSelector(selectHomeSettings);
-  const allProducts = useSelector(selectAllProducts);
+  const allProducts = useSelector(selectAllProducts).filter(p => p.isHide !== true);
   const bestSellersFiltered = useSelector(selectFilteredBestSellers);
   const onSaleFiltered = useSelector(selectFilteredOnSale);
   const bestSellers =
@@ -37,7 +37,6 @@ function Home() {
     onSaleFiltered.length > 0 ? onSaleFiltered : allProducts.slice(12, 24);
   const bestSellerFilter = useSelector(selectBestSellerFilter);
   const onSaleFilter = useSelector(selectOnSaleFilter);
-
   const bestSellerButtons = [
     {
       label: FILTER_LABELS.TOP_TAI_NGHE,

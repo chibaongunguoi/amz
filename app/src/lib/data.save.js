@@ -49,6 +49,8 @@ function normalizeProductPayload(product, collectionName, id) {
       product?.isbestSeller === true ||
       product?.isBestSeller === '1' ||
       product?.is_best_seller === true,
+    isHide:      
+      product?.isHide === true　,
     variants: Array.isArray(product?.variants)
       ? product.variants.map((variant) => ({
           ...variant,

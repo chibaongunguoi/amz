@@ -129,11 +129,13 @@ export function buildSearchItems(products = []) {
           priceForSale,
           priceDefault,
           salePercent,
+          isHide:product.isHide,
           inventory,
           inStock: inventory > 0,
           searchText: normalizeSearchText(variantSearchText(product, variant, displayName, label)),
         });
       });
+      
       continue;
     }
 
@@ -141,7 +143,7 @@ export function buildSearchItems(products = []) {
     const priceDefault = numberValue(product.priceDefault);
     const salePercent = numberValue(product.salePercent);
     const inventory = numberValue(product.inventory ?? product.inventories);
-
+    
     items.push({
       searchId: String(product.id),
       type: 'product',
@@ -250,6 +252,7 @@ export function searchCatalogItems(products, query, options = {}) {
   const primary = rankSearchItems(items, query, 0.42).slice(0, limit);
 
   if (primary.length > 0) {
+    console.log('Primary search results:', primary);
     return {
       query: String(query || '').trim(),
       mode: 'results',
@@ -265,7 +268,7 @@ export function searchCatalogItems(products, query, options = {}) {
     : items
         .filter((item) => item.inStock)
         .slice(0, suggestionLimit);
-
+ 
   return {
     query: String(query || '').trim(),
     mode: 'suggestions',

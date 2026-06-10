@@ -127,9 +127,11 @@ function Search() {
     () => searchCatalogItems(products, q, { limit: 60, suggestionLimit: 16 }),
     [products, q]
   );
-
-  const displayedItems = result.mode === 'results' ? result.items : result.suggestions;
-
+  
+  const displayedItems = result.mode === 'results' 
+  ? result.items.filter(item => !item.isHide) 
+  : result.suggestions.filter(item => !item.isHide);
+  
   const submitSearch = () => {
     const next = inputValue.trim();
     if (!next) {
