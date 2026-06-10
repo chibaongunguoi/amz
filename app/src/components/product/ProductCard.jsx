@@ -45,21 +45,37 @@ function ProductCard({ product }) {
     
     // Pricing vẫn lấy theo biến thể (in-stock đầu tiên, hoặc biến thể đầu tiên).
     // Ảnh chỉ fallback sang biến thể nếu product không có ảnh đại diện.
-    if (hasVariants) {
-      const variant = product.variants.find(v => Number(v.inventory) > 0) || product.variants[0];
-      if (variant) {
-        priceForSale = Number(variant.priceForSale) || priceForSale;
-        priceDefault = Number(variant.priceDefault) || priceDefault;
-        salePercent = Number(variant.salePercent) || salePercent;
-        
-        if (imgs.length === 0 && variant.images) {
-          const variantImages = parseImages(variant.images);
-          if (variantImages.length > 0) {
-            imgs = variantImages;
-          }
-        }
+   if (hasVariants) {
+  // Lọc các variant còn hàng (inventory > 0)
+  const inStockVariants = product.variants.filter(v => Number(v.inventory) > 0);
+  
+  let variant = null;
+  
+  if (inStockVariants.length > 0) {
+    // Tìm variant có priceForSale thấp nhất trong số các variant còn hàng
+    variant = inStockVariants.reduce((minVariant, currentVariant) => {
+      const minPrice = Number(minVariant.priceForSale) || Infinity;
+      const currentPrice = Number(currentVariant.priceForSale) || Infinity;
+      return currentPrice < minPrice ? currentVariant : minVariant;
+    }, inStockVariants[0]);
+  } else {
+    // Nếu không có variant nào còn hàng, lấy variant đầu tiên (hết hàng)
+    variant = product.variants[0];
+  }
+  
+  if (variant) {
+    priceForSale = Number(variant.priceForSale) || priceForSale;
+    priceDefault = Number(variant.priceDefault) || priceDefault;
+    salePercent = Number(variant.salePercent) || salePercent;
+    
+    if (imgs.length === 0 && variant.images) {
+      const variantImages = parseImages(variant.images);
+      if (variantImages.length > 0) {
+        imgs = variantImages;
       }
     }
+  }
+}
     
     // priceForSale đã là giá cuối (đã giảm) theo convention của admin form,
     // không nhân (1 - salePercent/100) thêm lần nữa để tránh double-discount.
@@ -155,6 +171,7 @@ function ProductCard({ product }) {
           <div className="flex-1">
             <div className="be-vietnam-pro-medium text-sm sm:text-base mb-1">
               {formatProductDisplayName(product.name)}
+              {console.log('ProductCard render:', product)}
             </div>
             
             <div className="font-bold text-base sm:text-xl text-[#D65312] leading-none">

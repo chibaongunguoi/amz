@@ -170,18 +170,35 @@ function ProductDetail() {
   const [ytbVideoId, setYtbVideoId] = useState("");
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-  const sortedVariants = useMemo(() => {
-    const variants = Array.isArray(product?.variants) ? product.variants : [];
-    return variants
-      .map((variant, index) => ({ variant, index }))
-      .sort((a, b) => {
-        const aInStock = Number(a.variant.inventory) > 0;
-        const bInStock = Number(b.variant.inventory) > 0;
-        if (aInStock !== bInStock) return aInStock ? -1 : 1;
-        return a.index - b.index;
-      })
-      .map((item) => item.variant);
-  }, [product?.variants]);
+ const sortedVariants = useMemo(() => {
+  const variants = Array.isArray(product?.variants) ? product.variants : [];
+  
+  // Tách riêng 2 nhóm: còn hàng và hết hàng
+  const inStockVariants = [];
+  const outOfStockVariants = [];
+  
+  variants.forEach((variant) => {
+    const isInStock = Number(variant.inventory) > 0;
+    if (isInStock) {
+      inStockVariants.push(variant);
+    } else {
+      outOfStockVariants.push(variant);
+    }
+  });
+  
+  // Sắp xếp mỗi nhóm theo priceForSale tăng dần
+  const sortByPrice = (a, b) => {
+    const priceA = Number(a.priceForSale) || 0;
+    const priceB = Number(b.priceForSale) || 0;
+    return priceA - priceB;
+  };
+  
+  inStockVariants.sort(sortByPrice);
+  outOfStockVariants.sort(sortByPrice);
+  
+  // Gộp lại: còn hàng trước, hết hàng sau
+  return [...inStockVariants, ...outOfStockVariants];
+}, [product?.variants]);
 
   const conditionLabel = toText(condition);
   const inventoryLabel = getInventoryLabel(product, selectedVariant);
@@ -341,7 +358,7 @@ function ProductDetail() {
       const variantPriceDefault = selectedVariant.priceDefault || product.priceDefault || 0;
       const variantSalePercent = selectedVariant.salePercent || product.salePercent || 0;
       
-      const finalPrice = calculateFinalPrice(variantPriceForSale, variantSalePercent);
+      const finalPrice = calculateFinalPrice(variantPriceForSale);
       
       setPriceForSale(formatCurrency(finalPrice));
 
@@ -609,6 +626,7 @@ function ProductDetail() {
           {/* Variants Selection */}
           {product.variants && Array.isArray(product.variants) && product.variants.length > 0 ? (
             <>
+              {console.log('Sorted Variants:', product)}
               <div className="mb-4">
                 <div className="flex flex-wrap gap-2">
                   {loading ? (
