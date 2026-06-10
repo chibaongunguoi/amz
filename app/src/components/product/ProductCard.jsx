@@ -171,7 +171,6 @@ function ProductCard({ product }) {
           <div className="flex-1">
             <div className="be-vietnam-pro-medium text-sm sm:text-base mb-1">
               {formatProductDisplayName(product.name)}
-              {console.log('ProductCard render:', product)}
             </div>
             
             <div className="font-bold text-base sm:text-xl text-[#D65312] leading-none">

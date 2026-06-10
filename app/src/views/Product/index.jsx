@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ProductGrid } from '../../components/product'
 import { Button, Grid } from 'antd'
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons'
-
+import { resetFilter } from '../../store/slices/filtersSlice';
 import { selectAllProducts } from '../../store/slices/productsSlice'
 import {
   clearAllFilters,
@@ -172,9 +172,8 @@ function Product() {
     priceRanges.length > 0
 
   const handleClearFilters = () => {
-    dispatch(clearAllFilters())
-  }
-
+    dispatch(resetFilter()); // Xóa tất cả filters (cả brands và priceRanges)
+  };
   const sortButtonStyle = useMemo(() => {
     if (isSmall) return { fontSize: 10, padding: 4 };
     if (isMedium) return { fontSize: 12, padding: '4px 8px' };

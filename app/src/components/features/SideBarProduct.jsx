@@ -13,10 +13,7 @@ function SideBarProduct({
   const { brands: selectedBrands, priceRanges: selectedPrices } = useSelector(
     (state) => state.filters
   );
-
-
- 
-
+  console.log('Selected Brands:', selectedBrands);
   const memoBrands = useMemo(() => brands, [brands]);
 
   const handleBrandClick = (brand) => {
