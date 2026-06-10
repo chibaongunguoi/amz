@@ -1,0 +1,5 @@
+export const PHONE_NUMBER = {
+    GENERAL: '0935241243',
+    HA_NOI: '0333571236',
+    DA_NANG: '0935241243',
+}

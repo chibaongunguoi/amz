@@ -1,0 +1,45 @@
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.ant-float-btn .ant-float-btn-body .ant-float-btn-icon {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.ant-float-btn .ant-float-btn-body .ant-float-btn-icon img {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.ant-float-btn:hover .ant-float-btn-body .ant-float-btn-description span {
+    color: white !important;
+}
+
+.ant-float-btn:hover .ant-float-btn-body .ant-float-btn-description .anticon {
+    color: white !important;
+}

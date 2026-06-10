@@ -1,0 +1,10 @@
+backup_id=amz-next-full-20260607-034246
+created_at=2026-06-07T03:42:47+07:00
+host=vm-crimson5390
+app_path=/var/www/amz-next
+node=v20.20.2
+npm=10.8.2
+next_service=amz-next.service
+site_url=http://180.93.96.87
+app_size=1.5G
+db_dump_size=280K

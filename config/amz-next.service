@@ -1,0 +1,19 @@
+[Unit]
+Description=AMZ NextJS
+After=network.target
+
+[Service]
+EnvironmentFile=-/var/www/amz-next/.env.production
+Type=simple
+WorkingDirectory=/var/www/amz-next
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=PORT=3000
+Environment=NEXT_PUBLIC_SITE_URL=http://180.93.96.87
+ExecStart=/usr/bin/node /var/www/amz-next/node_modules/next/dist/bin/next start -p 3000
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
