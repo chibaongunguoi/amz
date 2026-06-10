@@ -176,7 +176,8 @@ function ProductDetail() {
   // Tách riêng 2 nhóm: còn hàng và hết hàng
   const inStockVariants = [];
   const outOfStockVariants = [];
-  
+
+
   variants.forEach((variant) => {
     const isInStock = Number(variant.inventory) > 0;
     if (isInStock) {
@@ -618,9 +619,18 @@ function ProductDetail() {
                 </span>
               )}
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Giá tham khảo. Liên hệ Zalo để báo giá chi tiết.
+            {/* {console.log(selectedVariant.inventory)} */}
+          {!(selectedVariant?.inventory < 1) ? (
+            <div className="text-xs text-gray-500 mt-1" style={{ fontSize: 18, fontColor: 'red', fontWeight: 'bold' }}>
+            Giá tham khảo. Liên hệ Zalo để báo giá chi tiết.
             </div>
+          ) : (
+            <div className="text-xs text-gray-500 mt-1" style={{ fontSize: 18,fontColor: 'red', fontWeight: 'bold' }}>
+            Sản phẩm hiện đang hết hàng. Vui lòng liên hệ Zalo để đặt hàng.
+            </div>
+          )}
+        
+            
           </div>
 
           {/* Variants Selection */}
@@ -658,7 +668,7 @@ function ProductDetail() {
                               ? 'bg-orange-500 text-white border-orange-500 shadow-lg cursor-pointer'
                               : isInStock
                               ? 'bg-white text-gray-800 border-gray-300 hover:border-orange-300 hover:shadow-md cursor-pointer'
-                              : 'bg-gray-50 text-gray-400 border-gray-200 opacity-50 cursor-not-allowed pointer-events-none'
+                              : 'bg-gray-100 text-gray-500 border-gray-200 hover:border-orange-300 hover:shadow-md cursor-pointer'
                           }`}
                           style={{
                             minWidth: 132,
@@ -668,20 +678,20 @@ function ProductDetail() {
                             filter: !isInStock && !isSelected ? 'grayscale(100%)' : 'none',
                           }}
                           title={isInStock ? variantLabel : `${variantLabel} - Hết hàng`}
-                          aria-disabled={!isInStock}
+                          // aria-disabled={!isInStock}
                           onClick={() => {
-                            if (isInStock) {
+                            // if (isInStock) {
                               const nextVariant = isSelected ? null : variant;
                               setSelectedVariant(nextVariant);
                               // Reset selected image về 0 khi chọn variant mới hoặc quay lại sản phẩm gốc
                               setSelectedImage(0);
                               navigate(createProductDetailUrl(product, nextVariant), { replace: true });
-                            }
+                            // }
                           }}
                           onMouseEnter={(e) => {
-                            if (!isInStock) {
-                              e.currentTarget.style.cursor = 'not-allowed';
-                            }
+                            // if (!isInStock) {
+                            //   e.currentTarget.style.cursor = 'not-allowed';
+                            // }
                           }}
                         >
                           <div className="font-medium text-sm leading-snug">{variantLabel}</div>
