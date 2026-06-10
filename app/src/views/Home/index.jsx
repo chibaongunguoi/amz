@@ -28,6 +28,7 @@ function Home() {
   const dispatch = useDispatch();
   
   const homeSettings = useSelector(selectHomeSettings);
+  console.log('home settings in Home component:', homeSettings);
   const allProducts = useSelector(selectAllProducts).filter(p => p.isHide !== true);
   const bestSellersFiltered = useSelector(selectFilteredBestSellers);
   const onSaleFiltered = useSelector(selectFilteredOnSale);

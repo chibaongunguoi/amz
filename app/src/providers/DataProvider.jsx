@@ -72,6 +72,7 @@ export function DataProvider({ children }) {
       dispatch(setAllProducts(withProductSeoSlugs(allParsed)));
 
       const settings = await loadHomeSettings();
+      console.log('Loaded home settings:', settings);
       dispatch(setHomeSettings(settings));
       dispatch(setIsLoading(false));
     } catch (error) {
