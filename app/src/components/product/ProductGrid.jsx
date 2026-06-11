@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, memo } from 'react';
+import { useEffect, useState, useMemo, memo,useRef } from 'react';
 import { Row, Col, Button, Grid } from 'antd';
 import { useLocation } from 'react-router-dom';
 import ProductCard from './ProductCard';
@@ -10,10 +10,11 @@ const { useBreakpoint } = Grid;
 
 const { DEFAULT_VISIBLE, PRODUCT_PAGE_VISIBLE, INCREMENT } = UI.GRID;
 
-const BannerCol = memo(function BannerCol({ image }) {
+const BannerCol = memo(function BannerCol({ image,index }) {
+  console.log('Rendering BannerCol with image:', index);
   return (
     <Col xs={24} sm={24} md={24} lg={16}>
-      <div className="transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl rounded-xl overflow-hidden">
+      <div id={`banner-${index}`} className="transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl rounded-xl overflow-hidden">
         <ImageWithFallback
           src={image}
           alt="Banner"
@@ -46,6 +47,7 @@ function ProductGrid({
   const [visibleCount, setVisibleCount] = useState(initialCount);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
+
   useEffect(() => {
     setVisibleCount(initialCount);
     setIsLoadingMore(false);
@@ -55,14 +57,14 @@ function ProductGrid({
     const visibleProducts = products.slice(0, visibleCount);
     const items = [];
     let productIndex = 0;
-
     for (let i = 0; i < visibleProducts.length + banners.length; i++) {
       const banner = banners.find(b => b.index === i);
-      
       if (banner && screens.lg) {
+        console.log('Checking for banner at index:', i, 'Found:', banners);
         items.push(
-          <BannerCol key={`banner-${i}`} image={banner.image} />
+          <BannerCol key={`banner-${i}`} image={banner.image} index={banner.indexi} />
         );
+
       } else if (productIndex < visibleProducts.length) {
         const product = visibleProducts[productIndex];
         items.push(
@@ -79,6 +81,7 @@ function ProductGrid({
         );
         productIndex++;
       }
+
     }
 
     return items;

@@ -58,6 +58,7 @@ export default function Sidebar() {
   // Get items from config or use defaults
   const getMainItems = () => {
     if (uiConfig?.sidebar?.mainItems) {
+      console.log('Using main items from UI config:', uiConfig);
       return uiConfig.sidebar.mainItems
         .filter(item => item.enabled)
         .sort((a, b) => a.order - b.order)

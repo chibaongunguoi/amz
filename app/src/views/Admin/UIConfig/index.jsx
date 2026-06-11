@@ -10,13 +10,13 @@ import {
 } from '@/constants/footerContact'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectHighlightSelector,setHighlight,clearHighlight } from '../../../store/slices/highlightSlice';
+import {selectHomeSettings} from '@/store/slices/settingsSlice'
 const EMPTY_BRANCH = () => ({
   label: '',
   phones: [''],
   address: '',
   mapEmbedUrl: '',
 })
-
 function UIConfigManagement() {
   const dispatch = useDispatch();
   const [config, setConfig] = useState(null)
@@ -26,6 +26,7 @@ function UIConfigManagement() {
   const { updateDocData, addDocData } = useFirestore(null, 'ui-config')
    const iframeRef = useRef();
   const highlightSelector = useSelector(selectHighlightSelector);
+  const homeSettings = useSelector(selectHomeSettings);
   useEffect(() => {
     if (!iframeRef.current) return;
     
@@ -128,6 +129,16 @@ function UIConfigManagement() {
               { icon: 'item4.png', label: 'Khuyến mãi hot', value: 'Khuyến mãi hot', order: 0, enabled: true },
               { icon: 'item3.png', label: 'Bảo hành - sửa chữa', value: 'Bảo hành - sửa chữa', order: 1, enabled: true },
               { icon: 'item2.png', label: 'Bài viết', value: 'Bài viết', order: 2, enabled: true },
+            ],
+            
+          },banner: {
+            mainItems: [
+              { name: 'Top Banner', value: 'https://th.bing.com/th/id/R.0e5a9cfa08afb4f4343c30e30fe59c5f?rik=WzZPUckcfG0Qsg&pid=ImgRaw&r=0', enabled: true },
+              { name: 'Best Seller',  value: "https://hoanghamobile.com/Uploads/2024/05/07/tai-nghe-marshall-11.jpg",enabled: true },
+              { name: 'Bot Banner',  value: "https://hoanghamobile.com/Uploads/2024/05/07/tai-nghe-marshall-6.jpg",  enabled: true },
+              { name: 'deal cháy', value: "https://baochauelec.com/cdn/images/tai-nghe/tai-nghe-sony-wh-ch510-6.jpg", enabled: true },
+              { name: 'deal cháy 2', value: "https://baochauelec.com/cdn/images/tai-nghe/tai-nghe-sony-wh-ch510-6.jpg", enabled: true },
+             
             ],
           },
         }
@@ -238,7 +249,7 @@ function UIConfigManagement() {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <div className="flex space-x-8">
-          {['header', 'footer', 'sidebar'].map((tab) => (
+          {['banner','header', 'footer', 'sidebar'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -248,13 +259,68 @@ function UIConfigManagement() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {tab === 'header' ? 'Header' : tab === 'footer' ? 'Footer' : 'Sidebar'}
+              {tab === 'banner' ? 'Banner' : tab === 'header' ? 'Header' : tab === 'footer' ? 'Footer' : 'Sidebar'}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Header Tab */}
+           {activeTab === 'banner' && (
+        <div className="space-y-6 ">
+          {/* Top Banner */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Top Banner</h2>
+            <div className="space-y-4">
+              {config.banner.mainItems.map((banner, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4"
+                 onMouseEnter={() => handleMouseEnter(`#banner-${index+1}`)}
+                         onMouseLeave={handleMouseLeave}>
+                  {/* <div className="flex items-center gap-4 mb-3">
+                    <input
+                      type="checkbox"
+                      checked={banner.enabled}
+                      onChange={(e) => {
+                        const newBanner = [...config.banner.mainItems]
+                        newBanner[index] = { ...newBanner[index], enabled: e.target.checked }
+                        setConfig({
+                          ...config,
+                          banner: { ...config.banner, mainItems: newBanner },
+                        })
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <label className="text-sm font-medium text-gray-700">Hiển thị</label>
+                  </div> */}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
+                      <input
+                        type="text"
+                        defaultValue={banner.value}
+                        onChange={(e) => {
+                          const newBanner = [...config.banner.mainItems]
+                          newBanner[index] = { ...newBanner[index], value: e.target.value }
+                          setConfig({
+                            ...config,
+                            banner: { ...config.banner, mainItems: newBanner },
+                          })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+                      />
+                    </div>
+                      <div>
+                        <img src={banner.value} alt="Banner" className="w-full h-full object-cover" />
+                        </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          
+        </div>
+      )}
+      
       {activeTab === 'header' && (
         <div className="space-y-6 ">
           {/* Top Banner */}

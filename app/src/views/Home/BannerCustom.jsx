@@ -6,28 +6,43 @@ import { setCategory } from "../../store/slices/filtersSlice";
 import { useNavigate } from "react-router-dom";
 import routePath from "../../constants/routePath";
 import ImageWithFallback from "../../components/common/ImageWithFallback";
-
+import { loadCollection } from '@/lib/data';
+import { useEffect, useState } from 'react';
 const { useBreakpoint } = Grid;
 
 function BannerCustom() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const screens = useBreakpoint();
+  const [config, setConfig] = useState(null)
   const home = useSelector(state => state.settings.homeSettings);
   // Truyền array để ảnh admin lỗi sẽ tự fallback về asset bundled (luôn load được)
-  const bannerSources = home && home[0]?.bannerAllLink
-    ? [home[0].bannerAllLink, bannerCutom]
-    : [bannerCutom];
   const isDesktop = screens.lg;
-
-
+const fetchConfig = async () => {
+    try {
+      // loadCollection(..., true) = forceReload: luôn đọc từ server, bỏ qua cache
+      const docs = await loadCollection('ui-config', true)
+      if (docs.length > 0) {
+        let doc = docs[0]
+        setConfig(doc)
+      }
+    } catch (error) {
+      console.error('Error fetching config:', error)
+      message.error('Lỗi khi tải cấu hình')
+    } 
+  }
+  useEffect(() => {
+      fetchConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
   return (
-    <div
+    <div id="banner-1"
       className="relative bg-orange-400 rounded-xl overflow-hidden flex items-center p-8 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group"
       style={isDesktop ? { height: 549 } : {}}
     >
+      {console.log('Rendering BannerCustom with config:', config)}
       <ImageWithFallback
-        src={bannerSources}
+        src={config?.banner?.mainItems?.[0]?.value || bannerCutom}
         alt="Tai nghe"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
         style={{ zIndex: 1 }}

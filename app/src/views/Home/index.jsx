@@ -8,7 +8,7 @@ import BannerCustom2 from './BannerCustom2';
 import Feeback from './Feeback';
 import VideoBanner from './VideoBanner';
 import { ProductGrid } from '../../components/product';
-
+import { loadCollection } from '@/lib/data';
 import iconPopular from '../../assets/iconPopular.png';
 import fireIcon from '../../assets/fire.png';
 import OptimizedImage from '@/components/common/OptimizedImage';
@@ -38,8 +38,25 @@ function Home() {
     onSaleFiltered.length > 0 ? onSaleFiltered : allProducts.slice(12, 24);
   const bestSellerFilter = useSelector(selectBestSellerFilter);
   const onSaleFilter = useSelector(selectOnSaleFilter);
-  
  const [highlightedElement, setHighlightedElement] = useState(null);
+ const [config, setConfig] = useState(null);
+ const fetchConfig = async () => {
+     try {
+       // loadCollection(..., true) = forceReload: luôn đọc từ server, bỏ qua cache
+       const docs = await loadCollection('ui-config', true)
+       if (docs.length > 0) {
+         let doc = docs[0]
+         setConfig(doc)
+       }
+     } catch (error) {
+       console.error('Error fetching config:', error)
+       message.error('Lỗi khi tải cấu hình')
+     } 
+   }
+   useEffect(() => {
+       fetchConfig()
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [])
     useEffect(() => {
       const handleMessage = (event) => {
         console.log('Received message from iframe:', event.data);
@@ -126,6 +143,7 @@ function Home() {
 
   return (
     <div className="flex flex-col gap-6">
+      {console.log('Home render with config:', config) }
       <VideoBanner />
       <CountSale endDate={homeSettings?.[0]?.endDate} content={homeSettings?.[0]?.content} />
       <BannerCustom />
@@ -133,14 +151,14 @@ function Home() {
         title={
           <span className="flex gap-2">
             <b>Top bán chạy</b>
-            <OptimizedImage width={34} height={24} sizes="34px" src={iconPopular} alt="" />
+            <OptimizedImage width={34} height={24} sizes="34px"  src={iconPopular} alt="" />
           </span>
         }
         buttons={bestSellerButtons}
         products={bestSellers}
         banners={[
-          { index: 0, image: homeSettings?.[0]?.topSellingImage1 || '' },
-          { index: 6, image: homeSettings?.[0]?.topSellingImage2 || '' },
+          { index: 0, image:config?.banner.mainItems?.[1]?.value || '', indexi: 2 },
+          { index: 6, image: config?.banner.mainItems?.[1]?.value || '' , indexi: 2},
         ]}
         activeCategory={bestSellerFilter}
       />
@@ -155,8 +173,8 @@ function Home() {
         buttons={onSaleButtons}
         products={onSaleProducts}
         banners={[
-          { index: 0, image: homeSettings?.[0]?.hotDealImage1 || '' },
-          { index: 6, image: homeSettings?.[0]?.hotDealImage1 || '' },
+          { index: 0, image: config?.banner.mainItems?.[3]?.value  || '' ,indexi: 4},
+          { index: 6, image: config?.banner.mainItems?.[4]?.value || '' ,indexi: 5},
         ]}
         activeCategory={onSaleFilter}
       />
