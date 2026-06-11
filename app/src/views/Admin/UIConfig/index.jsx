@@ -1137,7 +1137,7 @@ function UIConfigManagement() {
     <iframe
       ref={iframeRef}
       key={"1"}
-      src="http://localhost:2011/"
+      src="https://amz-4.onrender.com/"
       className="w-full h-full border rounded shadow-lg"
       style={{ height: '100vh',width: '55%' }}
       title="Website Preview"
