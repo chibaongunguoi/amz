@@ -8,6 +8,8 @@ import filtersReducer from './slices/filtersSlice';
 import settingsReducer from './slices/settingsSlice';
 import uiReducer from './slices/uiSlice';
 import authReducer from './slices/authSlice';
+import highlightReducer from './slices/highlightSlice';
+
 
 const indexedDBStorageFactory =
   typeof createIndexedDBStorage === 'function'
@@ -23,12 +25,13 @@ const rootReducer = combineReducers({
   settings: settingsReducer,
   ui: uiReducer,
   auth: authReducer,
+  highlight: highlightReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['products', 'posts', 'settings', 'auth', 'filters'],
+  whitelist: ['products', 'posts', 'settings', 'auth', 'filters', 'highlight'],
   blacklist: ['ui'],
 };
 

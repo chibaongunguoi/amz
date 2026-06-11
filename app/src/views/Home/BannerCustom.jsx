@@ -14,12 +14,10 @@ function BannerCustom() {
   const navigate = useNavigate();
   const screens = useBreakpoint();
   const home = useSelector(state => state.settings.homeSettings);
-  const home2 = useSelector(state => console.log(1,state.settings));
   // Truyền array để ảnh admin lỗi sẽ tự fallback về asset bundled (luôn load được)
   const bannerSources = home && home[0]?.bannerAllLink
     ? [home[0].bannerAllLink, bannerCutom]
     : [bannerCutom];
-  console.log('home settings in BannerCustom:', bannerSources);
   const isDesktop = screens.lg;
 
 

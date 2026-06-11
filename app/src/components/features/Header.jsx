@@ -26,8 +26,7 @@ const ProductThumb = ({ images, alt }) => {
   const list = Array.isArray(images) ? images.filter(Boolean) : []
   const [idx, setIdx] = useState(0)
   const [failed, setFailed] = useState(false)
-
-  // Reset khi danh sách ảnh thay đổi (vd kết quả search khác)
+ 
   useEffect(() => {
     setIdx(0)
     setFailed(false)
@@ -560,7 +559,7 @@ function Header() {
             const IconComponent = getIconComponent(banner.icon)
             return (
               <Col key={index}>
-                <span className="text-[#F37021] font-medium text-base flex items-center gap-1">
+                <span id={`header-${index+1}`} className="text-[#F37021] font-medium text-base flex items-center gap-1">
                   <IconComponent className="text-[#F37021]" style={{ fontSize: '16px' }} />
                   {banner.text}
                 </span>
@@ -664,7 +663,7 @@ function Header() {
               </AutoComplete>
             </div>
           </div>
-          <div className="mt-6 flex items-baseline">
+          <div id="trending-keywords" className="mt-6 flex items-baseline">
             <h3 className='mb-2 text-[16px] text-[#D65312] font-medium'>Từ khoá xu hướng&nbsp;</h3>
             <span className="text-gray-500 text-xs flex gap-1">
               {keywords.map((keyword, idx) => (

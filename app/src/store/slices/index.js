@@ -4,7 +4,7 @@ export { default as filtersReducer } from './filtersSlice';
 export { default as settingsReducer } from './settingsSlice';
 export { default as uiReducer } from './uiSlice';
 export { default as authReducer } from './authSlice';
-
+export { default as highlightReducer } from './highlightSlice';
 export {
   setAllProducts, setCurrentProduct, clearCurrentProduct,
   setBestSellerFilter, setOnSaleFilter, resetFilters as resetProductFilters,
@@ -42,3 +42,7 @@ export {
   setAuthError, clearUser, resetAuth, selectUser, selectIsAuthenticated,
   selectAuthLoading, selectAuthError,
 } from './authSlice';
+
+export {
+  setHighlight, clearHighlight, selectHighlightSelector, selectIsHighlighting, selectLastHovered, resetHighlight,
+} from './highlightSlice';

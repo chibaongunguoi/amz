@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CountSale from './CountSale';
@@ -28,7 +29,6 @@ function Home() {
   const dispatch = useDispatch();
   
   const homeSettings = useSelector(selectHomeSettings);
-  console.log('home settings in Home component:', homeSettings);
   const allProducts = useSelector(selectAllProducts).filter(p => p.isHide !== true);
   const bestSellersFiltered = useSelector(selectFilteredBestSellers);
   const onSaleFiltered = useSelector(selectFilteredOnSale);
@@ -38,6 +38,60 @@ function Home() {
     onSaleFiltered.length > 0 ? onSaleFiltered : allProducts.slice(12, 24);
   const bestSellerFilter = useSelector(selectBestSellerFilter);
   const onSaleFilter = useSelector(selectOnSaleFilter);
+  
+ const [highlightedElement, setHighlightedElement] = useState(null);
+    useEffect(() => {
+      const handleMessage = (event) => {
+        console.log('Received message from iframe:', event.data);
+        // Kiểm tra nguồn gốc (bảo mật)
+        // if (event.origin !== 'http://localhost:3000') return;
+        
+        const { type, selector } = event.data;
+        
+        if (type === 'HOVER') {
+          console.log('🔴 Highlight element:', selector);
+          setHighlightedElement(selector);
+        } else if (type === 'LEAVE') {
+          console.log('⚪ Clear highlight');
+          setHighlightedElement(null);
+        }
+      };
+      
+      window.addEventListener('message', handleMessage);
+      
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
+    }, []);
+    
+    // Xử lý highlight khi có selector mới
+    useEffect(() => {
+      // Xóa highlight cũ
+      document.querySelectorAll('.admin-highlight').forEach((el) => {
+        el.classList.remove('admin-highlight');
+        el.style.outline = '';
+        el.style.backgroundColor = '';
+        el.style.transition = '';
+      });
+      
+      // Thêm highlight mới
+      if (highlightedElement) {
+        const element = document.querySelector(highlightedElement);
+        if (element) {
+          element.classList.add('admin-highlight');
+          element.style.outline = '3px solid #ef4444';
+          element.style.outlineOffset = '2px';
+          element.style.backgroundColor = '#fee2e2';
+          element.style.transition = 'all 0.3s ease';
+          
+          // Tự động scroll đến phần tử
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          console.warn('Element not found:', highlightedElement);
+        }
+      }
+    }, [highlightedElement]);
+
   const bestSellerButtons = [
     {
       label: FILTER_LABELS.TOP_TAI_NGHE,

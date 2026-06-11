@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import { useFirestore } from '@/hooks/useFirestore'
 import { message } from 'antd'
 import { saveCollectionData } from '@/lib/data.save'
@@ -8,7 +8,8 @@ import {
   FOOTER_DEFAULT_TITLES,
   normalizeFooterContactBlock,
 } from '@/constants/footerContact'
-
+import { useDispatch, useSelector } from 'react-redux';
+import { selectHighlightSelector,setHighlight,clearHighlight } from '../../../store/slices/highlightSlice';
 const EMPTY_BRANCH = () => ({
   label: '',
   phones: [''],
@@ -17,11 +18,41 @@ const EMPTY_BRANCH = () => ({
 })
 
 function UIConfigManagement() {
+  const dispatch = useDispatch();
   const [config, setConfig] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('header')
   const [saving, setSaving] = useState(false)
   const { updateDocData, addDocData } = useFirestore(null, 'ui-config')
+   const iframeRef = useRef();
+  const highlightSelector = useSelector(selectHighlightSelector);
+  useEffect(() => {
+    if (!iframeRef.current) return;
+    
+    const iframe = iframeRef.current;
+    if (!iframe.contentWindow) return;
+    
+    // Gửi message sang iframe
+    if (highlightSelector) {
+      iframe.contentWindow.postMessage({
+        type: 'HOVER',
+        selector: highlightSelector,
+      }, '*');
+    } else {
+      iframe.contentWindow.postMessage({
+        type: 'LEAVE',
+      }, '*');
+    }
+  }, [highlightSelector]);
+
+ const handleMouseEnter = (selector) => {
+    console.log('1️⃣ Dispatching setHighlight with:', selector);
+  dispatch(setHighlight(selector));
+  };
+  
+  const handleMouseLeave = () => {
+    dispatch(clearHighlight());
+  };
 
 
   useEffect(() => {
@@ -190,13 +221,15 @@ function UIConfigManagement() {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
+      <main className="flex-1 flex flex-nowrap" style={{ justifyContent: 'space-between' }}>
+    <div className="space-y-6 w-3/10">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Tùy chỉnh giao diện</h1>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-4 py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50"
+          className="px-4 py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50 relative top-7"
         >
           {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
         </button>
@@ -223,13 +256,15 @@ function UIConfigManagement() {
 
       {/* Header Tab */}
       {activeTab === 'header' && (
-        <div className="space-y-6">
+        <div className="space-y-6 ">
           {/* Top Banner */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Top Banner</h2>
             <div className="space-y-4">
               {config.header.topBanner.map((banner, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <div key={index} className="border border-gray-200 rounded-lg p-4"
+                 onMouseEnter={() => handleMouseEnter(`#header-${index+1}`)}
+                         onMouseLeave={handleMouseLeave}>
                   <div className="flex items-center gap-4 mb-3">
                     <input
                       type="checkbox"
@@ -250,6 +285,7 @@ function UIConfigManagement() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
                       <input
+                       
                         type="text"
                         value={banner.text}
                         onChange={(e) => {
@@ -289,7 +325,8 @@ function UIConfigManagement() {
           </div>
 
           {/* Keywords */}
-          <div>
+          <div                 onMouseEnter={() => handleMouseEnter("#trending-keywords")}
+                         onMouseLeave={handleMouseLeave}>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Từ khóa xu hướng</h2>
             <div className="space-y-2">
               {config.header.keywords.map((keyword, index) => (
@@ -552,7 +589,9 @@ function UIConfigManagement() {
                 const url = typeof v === 'string' ? v : (v?.url ?? '')
                 const enabled = typeof v === 'string' ? true : (v?.enabled !== false)
                 return (
-                  <div key={social} className="border border-gray-200 rounded-lg p-4">
+                  <div key={social} className="border border-gray-200 rounded-lg p-4"
+                  onMouseEnter={() => handleMouseEnter("#header-3")}
+                         onMouseLeave={handleMouseLeave}>
                     <div className="flex items-center gap-4 mb-3">
                       <input
                         type="checkbox"
@@ -997,6 +1036,40 @@ function UIConfigManagement() {
           </div>
         </div>
       )}
+    </div>
+    
+        {/* Phần bên trái - Settings */}
+        {/* <div className="w-3/10 bg-gray-100 p-4 overflow-y-auto"> */}
+          {/* Nội dung chỉnh giao diện bên trái */}
+        {/* </div> */}
+        
+        {/* Phần bên phải - Preview */}
+       <div className="w-7/10 bg-white relative" style={{ minHeight: '100vh', marginLeft: '30px' }}>
+  <h3 className="text-lg font-semibold mb-2">Xem trước</h3>
+  
+  {/* Sticky chỉ hoạt động trong div này */}
+  <div className="fixed top-20 scale-70 origin-top-left" 
+       style={{ 
+         width: `${100 / 0.7}%`, 
+         height: `${100 / 0.7}%`,
+         top: '150px',
+        //  right: '-1800px',
+        left: '650px',
+       }}>
+    <iframe
+      ref={iframeRef}
+      key={"1"}
+      src="http://localhost:2011/"
+      className="w-full h-full border rounded shadow-lg"
+      style={{ height: '100vh',width: '55%' }}
+      title="Website Preview"
+    />
+  </div>
+  
+  {/* Thêm nội dung để có thể scroll */}
+
+</div>
+      </main>
     </div>
   )
 }

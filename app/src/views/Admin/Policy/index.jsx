@@ -83,7 +83,7 @@ function Policy() {
         <label className="block text-sm font-medium text-gray-700 mb-2">Nội dung bài viết:</label>
         <div className="min-h-[500px]">
           <Editor
-            apiKey="b4ryhxq7nnx5nwmr46ft5ifo6da5zw2i6g7lthivcyr9acot"
+            apiKey="cz5oox07ngqjrf9x41m6vzjvbx1z1doslfi13jdtrgr0u4i8"
             value={content}
             onEditorChange={handleEditorChange}
             init={{
