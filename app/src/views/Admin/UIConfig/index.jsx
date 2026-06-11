@@ -386,6 +386,8 @@ function UIConfigManagement() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề khối kết nối</label>
                 <input
+                  onMouseEnter={() => handleMouseEnter(`#connect-title`)}
+                         onMouseLeave={handleMouseLeave}
                   type="text"
                   value={config.footer.contactBlock?.connectTitle ?? FOOTER_DEFAULT_TITLES.connectTitle}
                   onChange={(e) => {
@@ -403,7 +405,9 @@ function UIConfigManagement() {
               </div>
 
               {(config.footer.contactBlock?.locations ?? []).map((loc, li) => (
-                <div key={li} className="border border-gray-200 rounded-lg p-4 space-y-3 bg-gray-50/50">
+                <div key={li} className="border border-gray-200 rounded-lg p-4 space-y-3 bg-gray-50/50"
+                onMouseEnter={() => handleMouseEnter(`#branch-${li+1}`)}
+                         onMouseLeave={handleMouseLeave}>
                   <div className="flex justify-between items-center gap-2">
                     <h3 className="text-md font-medium text-gray-800">Chi nhánh {li + 1}</h3>
                     <button
@@ -427,6 +431,7 @@ function UIConfigManagement() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Tên chi nhánh</label>
                     <input
+                    
                       type="text"
                       value={loc.label}
                       onChange={(e) => {
@@ -562,6 +567,8 @@ function UIConfigManagement() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề khối mạng xã hội</label>
                 <input
+                onMouseEnter={() => handleMouseEnter(`#social-title`)}
+                         onMouseLeave={handleMouseLeave}
                   type="text"
                   value={config.footer.contactBlock?.socialTitle ?? FOOTER_DEFAULT_TITLES.socialTitle}
                   onChange={(e) => {
@@ -584,13 +591,13 @@ function UIConfigManagement() {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Liên kết mạng xã hội</h2>
             <div className="space-y-3">
-              {['facebook', 'instagram', 'tiktok', 'whatsapp', 'youtube'].map((social) => {
+              {['facebook', 'instagram', 'tiktok', 'whatsapp', 'youtube'].map((social, index) => {
                 const v = config.footer.socialLinks[social]
                 const url = typeof v === 'string' ? v : (v?.url ?? '')
                 const enabled = typeof v === 'string' ? true : (v?.enabled !== false)
                 return (
                   <div key={social} className="border border-gray-200 rounded-lg p-4"
-                  onMouseEnter={() => handleMouseEnter("#header-3")}
+                  onMouseEnter={() => handleMouseEnter(`#social-${index + 1}`)}
                          onMouseLeave={handleMouseLeave}>
                     <div className="flex items-center gap-4 mb-3">
                       <input
@@ -642,9 +649,10 @@ function UIConfigManagement() {
           {/* Categories */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Danh mục</h2>
-            <div className="grid grid-cols-2 gap-6">
+            <div className=" gap-6">
               {/* Loa Categories */}
-              <div>
+              <div onMouseEnter={() => handleMouseEnter(`#loa`)}
+                         onMouseLeave={handleMouseLeave}>
                 <h3 className="text-md font-medium text-gray-700 mb-3">Loa</h3>
                 <div className="space-y-2">
                   {config.footer.categories.loa.map((category, index) => (
@@ -703,7 +711,8 @@ function UIConfigManagement() {
               </div>
 
               {/* Tai Nghe Categories */}
-              <div>
+              <div onMouseEnter={() => handleMouseEnter(`#tai_nghe`)}
+                         onMouseLeave={handleMouseLeave}>
                 <h3 className="text-md font-medium text-gray-700 mb-3">Tai nghe</h3>
                 <div className="space-y-2">
                   {config.footer.categories.taiNghe.map((category, index) => (
@@ -792,7 +801,9 @@ function UIConfigManagement() {
                         <ArrowDownOutlined />
                       </button>
                     </div>
-                    <div className="flex-1 border border-gray-200 rounded-lg p-4">
+                    <div  onMouseEnter={() => handleMouseEnter(`#sidebar-item-${item.order + 1}`)}
+                         onMouseLeave={handleMouseLeave}
+                    className="flex-1 border border-gray-200 rounded-lg p-4">
                       <div className="flex items-center gap-4 mb-3">
                         <input
                           type="checkbox"
@@ -909,7 +920,8 @@ function UIConfigManagement() {
               {config.sidebar.exploreItems
                 .sort((a, b) => a.order - b.order)
                 .map((item, index) => (
-                  <div key={item.order} className="flex items-start gap-2">
+                  <div key={item.order} className="flex items-start gap-2" onMouseEnter={() => handleMouseEnter(`#sidebar-more-${item.order + 1}`)}
+                         onMouseLeave={handleMouseLeave}>
                     <div className="flex flex-col gap-1 pt-4">
                       <button
                         onClick={() => handleMoveItem('sidebar.exploreItems', item.order, 'up')}

@@ -93,7 +93,7 @@ function Footer() {
                         </ul>
                     </div>
 
-                    <div>
+                    <div id="loa">
                         <h6 className="font-normal text-lg mb-2">Loa</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
                             {(uiConfig?.footer?.categories?.loa || [
@@ -111,7 +111,7 @@ function Footer() {
                         </ul>
                     </div>
 
-                    <div>
+                    <div id="tai_nghe">
                         <h6 className="font-normal text-lg mb-2">Tai nghe</h6>
                         <ul className="space-y-2 text-sm text-gray-600">
                             {(uiConfig?.footer?.categories?.taiNghe || [
@@ -127,11 +127,11 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt5">
+                <div  className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt5">
                     <div className='mt-8'>
-                        <h6 className="font-normal text-lg mb-2">{contact.connectTitle}</h6>
+                        <h6 id="connect-title" className="font-normal text-lg mb-2">{contact.connectTitle}</h6>
                         {contact.locations.map((loc, idx) => (
-                            <div key={idx} className={`text-sm ${idx > 0 ? 'mt-4' : ''}`}>
+                            <div id={`branch-${idx + 1}`} key={idx} className={`text-sm ${idx > 0 ? 'mt-4' : ''}`}>
                                 {loc.label ? (
                                     <div className="font-medium mb-1">{loc.label}</div>
                                 ) : null}
@@ -148,7 +148,7 @@ function Footer() {
                             </div>
                         ))}
                         <div className='mt-4'>
-                            <h6 className="font-normal text-lg">{contact.socialTitle}</h6>
+                            <h6 id="social-title" className="font-normal text-lg">{contact.socialTitle}</h6>
                             <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
                                 {(() => {
                                     const socialLinks = uiConfig?.footer?.socialLinks || links
@@ -165,6 +165,7 @@ function Footer() {
                                         return { key, url, enabled, icon, alt, color, onClick }
                                     })
                                     return items.filter(({ enabled }) => enabled).map(({ key, url, icon, alt, color, onClick }) => (
+                                        
                                         <a
                                             key={key}
                                             href={url || '#'}

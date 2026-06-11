@@ -470,7 +470,7 @@ function Header() {
             </div>
             <div className="flex flex-col gap-3">
               {mainItems.map((item, idx) => (
-                <div
+                <div id={`sidebar-item-${idx+1}`}
                   key={idx}
                   className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:scale-[1.03] hover:shadow-md"
                   onClick={() => {
@@ -501,7 +501,7 @@ function Header() {
             </div>
             <div className="flex flex-col gap-3">
               {exploreItems.map((item, idx) => (
-                <div
+                <div 
                   key={idx}
                   className="w-full flex items-center gap-3 text-[15px] text-gray-800 rounded py-1 cursor-pointer transition-all duration-200 group hover:bg-gradient-to-r hover:from-pink-100 hover:to-yellow-100 hover:scale-[1.03] hover:shadow-md"
                   onClick={() => {
