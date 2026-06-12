@@ -60,6 +60,14 @@ function UIConfigManagement() {
     fetchConfig()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+const getIframeSrc = () => {
+  // Kiểm tra nếu đang chạy ở localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:2011'; // Hoặc http://localhost:2011
+  }
+  // Môi trường production
+  return 'https://amz-4.onrender.com/';
+};
 
   const migrateSocialLinks = (sl) => {
     const keys = ['facebook', 'instagram', 'tiktok', 'whatsapp', 'youtube']
@@ -272,48 +280,61 @@ function UIConfigManagement() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Top Banner</h2>
             <div className="space-y-4">
               {config.banner.mainItems.map((banner, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4"
-                 onMouseEnter={() => handleMouseEnter(`#banner-${index+1}`)}
-                         onMouseLeave={handleMouseLeave}>
-                  {/* <div className="flex items-center gap-4 mb-3">
-                    <input
-                      type="checkbox"
-                      checked={banner.enabled}
-                      onChange={(e) => {
-                        const newBanner = [...config.banner.mainItems]
-                        newBanner[index] = { ...newBanner[index], enabled: e.target.checked }
-                        setConfig({
-                          ...config,
-                          banner: { ...config.banner, mainItems: newBanner },
-                        })
-                      }}
-                      className="w-4 h-4"
-                    />
-                    <label className="text-sm font-medium text-gray-700">Hiển thị</label>
-                  </div> */}
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-                      <input
-                        type="text"
-                        defaultValue={banner.value}
-                        onChange={(e) => {
-                          const newBanner = [...config.banner.mainItems]
-                          newBanner[index] = { ...newBanner[index], value: e.target.value }
-                          setConfig({
-                            ...config,
-                            banner: { ...config.banner, mainItems: newBanner },
-                          })
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      />
-                    </div>
-                      <div>
-                        <img src={banner.value} alt="Banner" className="w-full h-full object-cover" />
-                        </div>
-                  </div>
-                </div>
-              ))}
+  <div key={index} className="border border-gray-200 rounded-lg p-4"
+    onMouseEnter={() => handleMouseEnter(`#banner-${index+1}`)}
+    onMouseLeave={handleMouseLeave}>
+    
+    <div className="space-y-3">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
+        <input
+          type="text"
+          defaultValue={banner.value}
+          onChange={(e) => {
+            let inputValue = e.target.value;
+            
+            // Hàm chuyển đổi link Google Drive
+            const convertDriveLink = (link) => {
+              const driveRegex = /\/file\/d\/([a-zA-Z0-9_-]+)/;
+              const match = link.match(driveRegex);
+              
+              if (match && match[1]) {
+                const fileId = match[1];
+                // Chuyển sang công thức thumbnail
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+              }
+              return link;
+            };
+            
+            // Kiểm tra nếu link chứa drive.google.com
+            if (inputValue.includes('drive.google.com')) {
+              inputValue = convertDriveLink(inputValue);
+            }
+            
+            const newBanner = [...config.banner.mainItems];
+            newBanner[index] = { ...newBanner[index], value: inputValue };
+            setConfig({
+              ...config,
+              banner: { ...config.banner, mainItems: newBanner },
+            });
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+        />
+      </div>
+      <div>
+        <img 
+          src={banner.value} 
+          alt="Banner" 
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            // Có thể thêm thông báo lỗi nếu muốn
+          }}
+        />
+      </div>
+    </div>
+  </div>
+))}
             </div>
           </div>
 
@@ -1137,7 +1158,7 @@ function UIConfigManagement() {
     <iframe
       ref={iframeRef}
       key={"1"}
-      src="https://amz-4.onrender.com/"
+      src={getIframeSrc()}
       className="w-full h-full border rounded shadow-lg"
       style={{ height: '100vh',width: '55%' }}
       title="Website Preview"

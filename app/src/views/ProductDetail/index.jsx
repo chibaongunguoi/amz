@@ -570,14 +570,6 @@ function ProductDetail() {
                   <div className="mt-0.5 font-semibold text-gray-800">{product.brand}</div>
                 </div>
               )}
-              {conditionLabel && (
-                <div className="rounded-md border border-gray-200 bg-white px-3 py-2" data-product-meta="condition">
-                  <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                    Tình trạng
-                  </div>
-                  <div className="mt-0.5 font-semibold text-gray-800">{conditionLabel}</div>
-                </div>
-              )}
               {inventoryLabel && (
                 <div className="rounded-md border border-gray-200 bg-white px-3 py-2" data-product-meta="inventory">
                   <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
