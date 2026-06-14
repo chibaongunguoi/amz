@@ -40,7 +40,6 @@ const fetchConfig = async () => {
       className="relative bg-orange-400 rounded-xl overflow-hidden flex items-center p-8 min-h-[260px] md:min-h-[350px] lg:min-h-[550px] group"
       style={isDesktop ? { height: 549 } : {}}
     >
-      {console.log('Rendering BannerCustom with config:', config)}
       <ImageWithFallback
         src={config?.banner?.mainItems?.[0]?.value || bannerCutom}
         alt="Tai nghe"

@@ -12,7 +12,7 @@ import { loadCollection } from '@/lib/data';
 import iconPopular from '../../assets/iconPopular.png';
 import fireIcon from '../../assets/fire.png';
 import OptimizedImage from '@/components/common/OptimizedImage';
-
+import MainCarousel from './MainCarousel';
 import { GROUP_KEYS, FILTER_LABELS } from '../../constants';
 import {
   selectAllProducts,
@@ -102,7 +102,7 @@ function Home() {
           element.style.transition = 'all 0.3s ease';
           
           // Tự động scroll đến phần tử
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.scrollIntoViewIfNeeded({ behavior: 'smooth', block: 'center' });
         } else {
           console.warn('Element not found:', highlightedElement);
         }
@@ -143,8 +143,8 @@ function Home() {
 
   return (
     <div className="flex flex-col gap-6">
-      {console.log('Home render with config:', config) }
-      <VideoBanner />
+      <MainCarousel />
+      {/* <VideoBanner /> */}
       <CountSale endDate={homeSettings?.[0]?.endDate} content={homeSettings?.[0]?.content} />
       <BannerCustom />
       <ProductGrid

@@ -3,7 +3,8 @@ import { Carousel, ConfigProvider } from 'antd'
 import { useSelector } from 'react-redux';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import ImageWithFallback from '../../components/common/ImageWithFallback';
-
+import { loadCollection } from '@/lib/data';
+import { useEffect, useState } from 'react';
 
 
 const carouselError = [
@@ -36,19 +37,27 @@ const CustomArrow = ({ className, style, onClick, direction }) => (
 );
 
 function MainCarousel() {
-  const home = useSelector(state =>
-    state.settings &&
-    Array.isArray(state.settings.homeSettings)
-      ? state.settings.homeSettings
-      : []
-  );
-  const images =
-    home.length > 0 &&
-    Array.isArray(home[0]?.imageLinks) &&
-    home[0].imageLinks.length > 0
-      ? home[0].imageLinks
-      : carouselError;
-
+  const [config, setConfig] = useState(null)
+  const fetchConfig = async () => {
+       try {
+         // loadCollection(..., true) = forceReload: luôn đọc từ server, bỏ qua cache
+         const docs = await loadCollection('ui-config', true)
+         if (docs.length > 0) {
+           let doc = docs[0]
+           setConfig(doc)
+         }
+       } catch (error) {
+         console.error('Error fetching config:', error)
+         message.error('Lỗi khi tải cấu hình')
+       } 
+     }
+     useEffect(() => {
+         fetchConfig()
+       // eslint-disable-next-line react-hooks/exhaustive-deps
+       }, [])
+ const images = Array.isArray(config?.recom?.mainItems)
+  ? config.recom.mainItems.map(item => item.value)
+  : carouselError;
   return (
     <ConfigProvider
       theme={{
@@ -60,7 +69,7 @@ function MainCarousel() {
         },
       }}
     >
-      <div className="carousel-container group">
+      <div id="carousel" className="carousel-container group">
         <Carousel 
           autoplay 
           arrows 

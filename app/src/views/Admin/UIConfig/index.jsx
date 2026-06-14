@@ -148,7 +148,15 @@ const getIframeSrc = () => {
               { name: 'deal cháy 2', value: "https://baochauelec.com/cdn/images/tai-nghe/tai-nghe-sony-wh-ch510-6.jpg", enabled: true },
              
             ],
-          },
+          },recom: {
+            type: 'Carousel',
+            mainItems: [
+              { value: 'https://tiengvangaudio.vn/wp-content/uploads/2023/02/BANNER-DM-JBL.jpg', enabled: true },
+              { value: "https://bestproductquest.com/wp-content/uploads/2023/11/party-speakers-blog.jpg",enabled: true },
+              { value: "https://s.yimg.com/ny/api/res/1.2/P2L_T4BwO7PGrvtDDR75Zw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTU0MA--/https://s.yimg.com/os/creatr-uploaded-images/2024-01/b5d24710-ab34-11ee-9ffc-2c2355fda7ec",  enabled: true },
+             
+            ],
+          }
         }
         setConfig(defaultConfig)
       }
@@ -277,16 +285,88 @@ const getIframeSrc = () => {
         <div className="space-y-6 ">
           {/* Top Banner */}
           <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{config.recom.type}</h2>
+            <div className="space-y-4">
+              {config.recom.mainItems.map((banner, index) => (
+          <div key={index} className="border border-gray-200 rounded-lg p-4"
+            onMouseEnter={() => handleMouseEnter(`#carousel`)}
+            onMouseLeave={handleMouseLeave}>
+            
+            <div className="space-y-3">
+              <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Ảnh</label>
+        <input
+          type="text"
+          value={banner.value}
+          onChange={(e) => {
+            let inputValue = e.target.value;
+            
+            // Hàm chuyển đổi link Google Drive
+            const convertDriveLink = (link) => {
+              const driveRegex = /\/file\/d\/([a-zA-Z0-9_-]+)/;
+              const match = link.match(driveRegex);
+              
+              if (match && match[1]) {
+                const fileId = match[1];
+                // Chuyển sang công thức thumbnail
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
+              }
+              return link;
+            };
+            
+            // Kiểm tra nếu link chứa drive.google.com
+            if (inputValue.includes('drive.google.com')) {
+              inputValue = convertDriveLink(inputValue);
+            }
+            
+            const newRecom = [...config.recom.mainItems];
+            newRecom[index] = { ...newRecom[index], value: inputValue };
+            setConfig({
+              ...config,
+              recom: { ...config.recom, mainItems: newRecom },
+            });
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+        />
+      </div>
+      <div>
+        {console.log('Updating recom.mainItems with:', config)}
+        <img 
+          src={banner.value} 
+          alt="Banner" 
+          className="w-full h-full object-cover"
+  
+        />
+      </div>
+    </div>
+  </div>
+))}
+<button
+                onClick={() => {
+                  setConfig({
+                    ...config,
+                    recom: { ...config.recom, mainItems: [...config.recom.mainItems, {value: '',enabled: true}] },
+                  })
+                }}
+                className="px-4 py-2 bg-gray-100 text-gray-900 text-sm rounded hover:bg-gray-200"
+              >
+                + Thêm ảnh
+              </button>
+            </div>
+          </div>
+
+
+          <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Top Banner</h2>
             <div className="space-y-4">
               {config.banner.mainItems.map((banner, index) => (
-  <div key={index} className="border border-gray-200 rounded-lg p-4"
-    onMouseEnter={() => handleMouseEnter(`#banner-${index+1}`)}
-    onMouseLeave={handleMouseLeave}>
-    
-    <div className="space-y-3">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
+          <div key={index} className="border border-gray-200 rounded-lg p-4"
+            onMouseEnter={() => handleMouseEnter(`#banner-${index+1}`)}
+            onMouseLeave={handleMouseLeave}>
+            
+            <div className="space-y-3">
+              <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Ảnh</label>
         <input
           type="text"
           defaultValue={banner.value}
@@ -337,7 +417,7 @@ const getIframeSrc = () => {
 ))}
             </div>
           </div>
-
+        
           
         </div>
       )}
@@ -1143,30 +1223,27 @@ const getIframeSrc = () => {
         {/* </div> */}
         
         {/* Phần bên phải - Preview */}
-       <div className="w-7/10 bg-white relative" style={{ minHeight: '100vh', marginLeft: '30px' }}>
+       <div className="w-7/10  relative" style={{ marginLeft: '30px' ,marginBottom: '-200px',
+        // maxHeight: '80vh',
+       }}>
   <h3 className="text-lg font-semibold mb-2">Xem trước</h3>
   
-  {/* Sticky chỉ hoạt động trong div này */}
-  <div className="fixed top-20 scale-70 origin-top-left" 
+  {/* Thay fixed bằng sticky, bỏ left: 650px */}
+  <div className="sticky top-[150px] scale-70 origin-top-left" 
        style={{ 
          width: `${100 / 0.7}%`, 
-         height: `${100 / 0.7}%`,
-         top: '150px',
-        //  right: '-1800px',
-        left: '650px',
        }}>
     <iframe
       ref={iframeRef}
       key={"1"}
       src={getIframeSrc()}
-      className="w-full h-full border rounded shadow-lg"
-      style={{ height: '100vh',width: '55%' }}
+      className="border rounded shadow-lg"
+      style={{ height: '100vh', width: '100%' }}
       title="Website Preview"
     />
   </div>
   
   {/* Thêm nội dung để có thể scroll */}
-
 </div>
       </main>
     </div>

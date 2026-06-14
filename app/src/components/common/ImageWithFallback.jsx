@@ -47,7 +47,7 @@ function ImageWithFallback({
   if (failed || list.length === 0 || idx >= list.length) {
     if (fallback !== undefined) return fallback;
     return (
-      <div
+      <div 
         className={
           fallbackClassName ||
           (className ? `${className} flex items-center justify-center bg-gray-100 text-gray-400` : 'flex items-center justify-center bg-gray-100 text-gray-400')

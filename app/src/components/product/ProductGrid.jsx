@@ -60,7 +60,6 @@ function ProductGrid({
     for (let i = 0; i < visibleProducts.length + banners.length; i++) {
       const banner = banners.find(b => b.index === i);
       if (banner && screens.lg) {
-        console.log('Checking for banner at index:', i, 'Found:', banners);
         items.push(
           <BannerCol key={`banner-${i}`} image={banner.image} index={banner.indexi} />
         );
