@@ -287,14 +287,34 @@ const getIframeSrc = () => {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{config.recom.type}</h2>
             <div className="space-y-4">
-              {config.recom.mainItems.map((banner, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg p-4"
-            onMouseEnter={() => handleMouseEnter(`#carousel`)}
-            onMouseLeave={handleMouseLeave}>
-            
-            <div className="space-y-3">
-              <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Ảnh</label>
+            {config.recom.mainItems.map((banner, index) => (
+  <div key={index} className="border border-gray-200 rounded-lg p-4"
+    onMouseEnter={() => handleMouseEnter(`#carousel`)}
+    onMouseLeave={handleMouseLeave}>
+    
+    <div className="space-y-3">
+      <div>
+        {/* Thanh tiêu đề chứa Label bên trái và Nút xóa bên phải */}
+        <div className="flex justify-between items-center mb-1">
+          <label className="block text-sm font-medium text-gray-700">Ảnh {index + 1}</label>
+          
+          <button
+            type="button"
+            onClick={() => {
+              // Lọc bỏ phần tử hiện tại dựa vào index
+              const newRecom = config.recom.mainItems.filter((_, idx) => idx !== index);
+              
+              setConfig({
+                ...config,
+                recom: { ...config.recom, mainItems: newRecom },
+              });
+            }}
+            className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+          >
+            Xóa
+          </button>
+        </div>
+
         <input
           type="text"
           value={banner.value}
@@ -308,13 +328,11 @@ const getIframeSrc = () => {
               
               if (match && match[1]) {
                 const fileId = match[1];
-                // Chuyển sang công thức thumbnail
                 return `https://drive.google.com/thumbnail?id=${fileId}&sz=s1000`;
               }
               return link;
             };
             
-            // Kiểm tra nếu link chứa drive.google.com
             if (inputValue.includes('drive.google.com')) {
               inputValue = convertDriveLink(inputValue);
             }
@@ -327,17 +345,24 @@ const getIframeSrc = () => {
             });
           }}
           className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+          placeholder="Dán link hình ảnh vào đây..."
         />
       </div>
-      <div>
-        {console.log('Updating recom.mainItems with:', config)}
-        <img 
-          src={banner.value} 
-          alt="Banner" 
-          className="w-full h-full object-cover"
-  
-        />
-      </div>
+      
+      {/* Chỉ hiển thị khung ảnh nếu có giá trị để tránh vỡ layout khung trống */}
+      {banner.value && (
+        <div className="mt-2 border rounded overflow-hidden max-h-[160px]">
+          <img 
+            src={banner.value} 
+            alt="Banner Preview" 
+            className="w-full h-auto object-cover"
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = "https://placehold.co/600x400?text=Link+anh+loi";
+            }}
+          />
+        </div>
+      )}
     </div>
   </div>
 ))}
